@@ -1,0 +1,36 @@
+
+
+name: CI
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+  workflow_dispatch:
+
+jobs:
+  unit-test:
+    runs-on: ubuntu-latest
+    name: Run unit tests
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - run: npm install
+      - run: make unit-test
+
+  cov-test:
+    runs-on: ubuntu-latest
+    name: Test if code coverage is greater than 70%
+    steps:
+      - uses: actions/checkout@v2
+      - uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+          check-latest: true
+      - run: npm install
+      - run: make coverage-test

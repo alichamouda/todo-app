@@ -9,5 +9,5 @@ build-image:
 	docker build -t todo-app .
 
 run-compose: build-image
-	docker-compose up -d
+	docker-compose up
 

@@ -11,7 +11,7 @@ import { MetricsModule } from './metrics/metrics.module';
     TypeOrmModule.forRoot({
       type: 'mysql',
       host: process.env.DB_HOSTNAME || 'localhost',
-      port: +process.env.DB_PORT || 3306,
+      port: +process.env.DB_PORT || 3318,
       username: process.env.DB_USERNAME || 'todo-app',
       password: process.env.DB_PASSWORD || '0000',
       database: process.env.DB_NAME || 'todo',

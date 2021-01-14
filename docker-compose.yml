@@ -1,26 +1,28 @@
 version: '3.7'
 services:
 
-  todo-app:
-    image: todo-app
-    environment: 
-      - DB_USERNAME=todo-app
-      - DB_PASSWORD=0000
-      - DB_HOSTNAME=db
-      - DB_NAME=todo
-      - DB_PORT=3306
-      - TODO_APP_PORT=3000
-    networks:
-      - private-network
-    ports:
-      - 3000:3000
-    depends_on: 
-      - db
+#  todo-app:
+#    image: todo-app
+#    environment:
+#      - DB_USERNAME=todo-app
+#      - DB_PASSWORD=0000
+#      - DB_HOSTNAME=db
+#      - DB_NAME=todo
+#      - DB_PORT=3306
+#      - TODO_APP_PORT=3000
+#    networks:
+#      - private-network
+#    ports:
+#      - 3000:3000
+#    depends_on:
+#      - db
 
   db:
     image: mysql:8.0.15
     command: --default-authentication-plugin=mysql_native_password
     restart: always
+    ports:
+      - 3318:3306
     networks:
       - private-network
     environment:

@@ -9,6 +9,32 @@
             "image": "ecs-devops-todo-repository:00000",
             "resourceRequirements": null,
             "essential": true,
+            "environment": [
+                {
+                    "name": "DB_USERNAME",
+                    "value": "rdsUsername"
+                },
+                {
+                    "name": "DB_PASSWORD",
+                    "value": "Rds321159987"
+                },
+                {
+                    "name": "DB_HOSTNAME",
+                    "value": "er1uj9rx9g00e51.cz11zelabhbi.us-east-1.rds.amazonaws.com"
+                },
+                {
+                    "name": "DB_NAME",
+                    "value": "todo"
+                },
+                {
+                    "name": "DB_PORT",
+                    "value": "3306"
+                },
+                {
+                    "name": "TODO_APP_PORT",
+                    "value": "3000"
+                }
+            ],
             "portMappings": [
                 {
                     "containerPort": "3000",

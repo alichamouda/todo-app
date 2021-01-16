@@ -4,7 +4,7 @@
 ## Description
 
 bla bla bla
-
+Pers Strategy
 aws secretsmanager create-secret --name rds/todo-app  --secret-string <SECRET_PASSWORD>
 
 ```

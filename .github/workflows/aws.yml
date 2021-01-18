@@ -30,7 +30,13 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v1
 
-    - run: |
+    - shell: bash
+      env:
+        AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
+        AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
+        AWS_SESSION_TOKEN:  ${{ secrets.AWS_SESSION_TOKEN }}
+        AWS_DEFAULT_REGION: us-east-1
+      run: |
         DB_HOSTNAME=`make rds-endpoint`
         sed -i "s/\%db_hostname\%/\"$DB_HOSTNAME\"/" task-definition.json 
 

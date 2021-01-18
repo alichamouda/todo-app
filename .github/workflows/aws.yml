@@ -38,12 +38,13 @@ jobs:
         AWS_DEFAULT_REGION: us-east-1
       run: |
         DB_HOSTNAME=`make rds-endpoint`
+        echo $DB_HOSTNAME
         sed -i "s/\%db_hostname\%/\"$DB_HOSTNAME\"/" task-definition.json 
 
     - shell: bash
       env:
         DB_PASSWORD: ${{ secrets.DB_PASSWORD }}
-      run: sed -i "s/\%db_hostname\%/\"$DB_HOSTNAME\"/" task-definition.json 
+      run: sed -i "s/\%db_password\%/\"$DB_PASSWORD\"/" task-definition.json 
 
     - name: Configure AWS credentials
       uses: aws-actions/configure-aws-credentials@v1

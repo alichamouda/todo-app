@@ -16,11 +16,11 @@
                 },
                 {
                     "name": "DB_PASSWORD",
-                    "value": "Rds321159987"
+                    "value": %db_password%
                 },
                 {
                     "name": "DB_HOSTNAME",
-                    "value": "er16gqz1gbf0fv0.cz11zelabhbi.us-east-1.rds.amazonaws.com"
+                    "value": %db_hostname%
                 },
                 {
                     "name": "DB_NAME",

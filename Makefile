@@ -5,6 +5,9 @@ unit-test:
 coverage-test:
 	test `npm run test:cov | grep "All files" | cut -d'|' -f4 | tr -d ' ' | cut -d'.' -f1` -gt 70
 
+rds-endpoint:
+	aws rds describe-db-instances --query 'DBInstances[?DBName==`todo`].{Address:Endpoint.Address}' | grep Address | cut -d':' -f2 | tr -d ' \"'
+
 build-image:
 	docker build -t todo-app .
 

@@ -12,12 +12,3 @@ COPY ./package.json .
 RUN npm install
 EXPOSE 3000
 CMD ["node", "./dist/main.js"]
-# FROM node:current-alpine3.12 as appbuild
-# WORKDIR /todo-app
-# RUN npm i -g @nestjs/cli
-# RUN nest new todo
-# WORKDIR /todo-app/todo
-# RUN npm install
-# RUN npm run build
-# EXPOSE 3000
-# CMD ["node", "./dist/main.js"]

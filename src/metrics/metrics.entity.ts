@@ -14,4 +14,10 @@ export class Metrics {
   @Column({ default: 0 })
   putCount: number;
 
+  constructor() {
+    this.putCount = 0;
+    this.getCount = 0;
+    this.postCount = 0;
+    this.deleteCount = 0;
+  }
 }

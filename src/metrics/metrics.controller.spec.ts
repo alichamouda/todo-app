@@ -32,7 +32,7 @@ describe('MetricsController', () => {
   describe('getMetrics', () => {
     it('should return empty metrics', async () => {
       await expect(controller.getMetrics()).resolves.toEqual({
-        http_total_requests: 0,
+        http_requests_total: 0,
       });
     });
   });

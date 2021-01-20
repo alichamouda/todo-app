@@ -31,9 +31,12 @@ describe('MetricsController', () => {
 
   describe('getMetrics', () => {
     it('should return empty metrics', async () => {
-      await expect(controller.getMetrics()).resolves.toEqual({
-        http_requests_total: 0,
-      });
+      await expect(controller.getMetrics()).resolves.toEqual(
+        `http_requests_total{handler="todo",method="get"} 0\n
+            http_requests_total{handler="todo",method="post"} 0\n
+            http_requests_total{handler="todo",method="put"} 0\n
+            http_requests_total{handler="todo",method="delete"} 0\n`,
+      );
     });
   });
 });

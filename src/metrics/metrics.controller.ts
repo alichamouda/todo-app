@@ -9,6 +9,12 @@ export class MetricsController {
   async getMetrics(): Promise<any> {
     const metrics = await this.metricsService.getMetrics();
     delete metrics.id;
-    return metrics;
+    return {
+      http_total_requests:
+        metrics.getCount +
+        metrics.deleteCount +
+        metrics.postCount +
+        metrics.putCount,
+    };
   }
 }

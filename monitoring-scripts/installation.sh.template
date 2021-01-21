@@ -37,20 +37,26 @@ sudo sed -i "s/\;admin_password = admin/admin_password = $GRAFANA_PASSWORD/" /et
 sudo sed -i "s/\;enabled = false/enabled = true/" /etc/grafana/grafana.ini
 sudo sed -i "s/\;host = localhost:25/host = smtp.gmail.com:465/" /etc/grafana/grafana.ini
 sudo sed -i "s/\;user =/user = $GRAFANA_EMAIL/" /etc/grafana/grafana.ini
+sleep 2;
+clear
 
 sudo sed -i "s/\;password =/password = \"$GRAFANA_EMAIL_PASSWORD\"/" /etc/grafana/grafana.ini
 sudo sed -i "s/\;skip_verify = false/skip_verify = true/" /etc/grafana/grafana.ini
 sudo sed -i "s/\;from_address = admin@grafana.localhost/from_address = $GRAFANA_EMAIL/" /etc/grafana/grafana.ini
 sudo sed -i "s/\;from_name = Grafana/from_name = ECS Monitoring Grafana/" /etc/grafana/grafana.ini
+sleep 2;
+clear
 
 sudo rm *.deb
 sudo setcap cap_net_bind_service=+ep /usr/sbin/grafana-server
 sudo systemctl daemon-reload && sudo systemctl enable grafana-server && sudo systemctl start grafana-server.service
 
+clear
 sleep 10;
-
 curl -vX POST http://localhost/api/datasources -d @datasource.json --header "Content-Type: application/json" --user "admin:$GRAFANA_PASSWORD"
+sleep 2;
 curl -vX POST http://localhost/api/alert-notifications -d @alert-conf.json --header "Content-Type: application/json" --user "admin:$GRAFANA_PASSWORD"
+sleep 2;
 curl -vX POST http://localhost/api/dashboards/import -d @dashboard.json --header "Content-Type: application/json" --user "admin:$GRAFANA_PASSWORD"
 sleep 2;
 clear

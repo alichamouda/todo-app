@@ -15,6 +15,8 @@ while [ "${instance_loaded^^}" = "NONE" ] || [ "${instance_loaded^^}" = "" ];
     echo "Waiting for EC2 to be set ..."
   instance_loaded=$(aws ec2 describe-instances   --query 'Reservations[].Instances[].[PublicIpAddress, Tags[?Value==`todo-monitoring`].Value[] | [0]]'   --output text 2>&1 | sed -e "s/todo-monitoring//g" | tr -d "[:space:]")
 done;
+
+instance_loaded=$( echo $instance_loaded | grep -Pom 1 '[0-9.]{7,15}')
 echo "EC2 Public IP: $instance_loaded"
 
 elb_instance=$(aws elbv2 describe-load-balancers --query  'LoadBalancers[*].{DNSName:DNSName}' | grep DNSName | tr -d ' \"' | cut -d':' -f2)
@@ -23,6 +25,8 @@ while [ "${elb_instance^^}" = "" ];
   echo "Waiting for ELB to be set ..."
   elb_instance=$(aws elbv2 describe-load-balancers --query  'LoadBalancers[*].{DNSName:DNSName}' | grep DNSName | tr -d ' \"' | cut -d':' -f2)
 done;
+
+
 echo "ELB DNS: $elb_instance"
 
 echo "#!/bin/bash" > configec2.sh

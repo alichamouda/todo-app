@@ -32,5 +32,8 @@ EOF
 
 sed -i "s/aws_account_id/$aws_account_id/" app.py
 sed -i "s/aws_region/$aws_region/" app.py
-# sed -i "s/db_password_secret_here/$rds_password_secret_arn/" ./ecs_devops_todo_cdk/ecs_devops_todo_cdk_stack.py
+sleep 2;
+echo "Replacing. Pattern: " "s/db_password_secret_here/$rds_password_secret_arn/"
+sed -i "s/db_password_secret_here/$rds_password_secret_arn/" ./ecs_devops_todo_cdk/ecs_devops_todo_cdk_stack.py
+sleep 2;
 cdk synth 

@@ -1,0 +1,60 @@
+
+
+############ Script Vars #################
+GRAFANA_PASSWORD=
+GRAFANA_EMAIL=
+GRAFANA_EMAIL_PASSWORD=
+############ Prometheus Part #############
+
+# Download and set up Prometheus
+wget https://github.com/prometheus/prometheus/releases/download/v2.1.0/prometheus-2.1.0.linux-amd64.tar.gz
+sudo tar -xf prometheus-2.1.0.linux-amd64.tar.gz
+sudo mv prometheus-2.1.0.linux-amd64/prometheus prometheus-2.1.0.linux-amd64/promtool /usr/local/bin
+sudo mkdir /etc/prometheus /var/lib/prometheus
+sudo mv prometheus-2.1.0.linux-amd64/consoles prometheus-2.1.0.linux-amd64/console_libraries /etc/prometheus
+sudo rm -r prometheus-2.1.0.linux-amd64*
+
+# Configuring Prometheus
+sudo cat prometheus.yml > /etc/prometheus/prometheus.yml
+sudo useradd -rs /bin/false prometheus
+sudo chown -R prometheus: /etc/prometheus /var/lib/prometheus
+
+# Create Prometheus Service
+sudo cp prometheus.service /etc/systemd/system/prometheus.service
+sudo systemctl daemon-reload
+sudo systemctl enable prometheus
+sudo systemctl start  prometheus
+
+############# Grafana Part #################
+
+wget https://s3-us-west-2.amazonaws.com/grafana-releases/release/grafana_5.0.4_amd64.deb
+sudo apt-get install -y adduser libfontconfig
+sudo dpkg -i grafana_5.0.4_amd64.deb
+sudo sed -i "s/\;http_port = 3000/http_port = 80/" /etc/grafana/grafana.ini
+sudo sed -i "s/\;admin_password = admin/admin_password = $GRAFANA_PASSWORD/" /etc/grafana/grafana.ini
+
+
+sudo sed -i "s/\;enabled = false/enabled = true/" /etc/grafana/grafana.ini
+sudo sed -i "s/\;host = localhost:25/host = smtp.gmail.com:465/" /etc/grafana/grafana.ini
+sudo sed -i "s/\;user =/user = $GRAFANA_EMAIL/" /etc/grafana/grafana.ini
+
+sudo sed -i "s/\;password =/password = \"$GRAFANA_EMAIL_PASSWORD\"/" /etc/grafana/grafana.ini
+sudo sed -i "s/\;skip_verify = false/skip_verify = true/" /etc/grafana/grafana.ini
+sudo sed -i "s/\;from_address = admin@grafana.localhost/from_address = $GRAFANA_EMAIL/" /etc/grafana/grafana.ini
+sudo sed -i "s/\;from_name = Grafana/from_name = ECS Monitoring Grafana/" /etc/grafana/grafana.ini
+
+sudo rm *.deb
+sudo setcap cap_net_bind_service=+ep /usr/sbin/grafana-server
+sudo systemctl daemon-reload && sudo systemctl enable grafana-server && sudo systemctl start grafana-server.service
+
+sleep 10;
+
+curl -vX POST http://localhost/api/datasources -d @datasource.json --header "Content-Type: application/json" --user "admin:$GRAFANA_PASSWORD"
+curl -vX POST http://localhost/api/alert-notifications -d @alert-conf.json --header "Content-Type: application/json" --user "admin:$GRAFANA_PASSWORD"
+curl -vX POST http://localhost/api/dashboards/import -d @dashboard.json --header "Content-Type: application/json" --user "admin:$GRAFANA_PASSWORD"
+sleep 2;
+clear
+sudo systemctl status  prometheus
+sudo systemctl status  grafana-server
+
+

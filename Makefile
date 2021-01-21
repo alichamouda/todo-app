@@ -12,7 +12,16 @@ alb-endpoint:
 	@aws elbv2 describe-load-balancers --query  'LoadBalancers[*].{DNSName:DNSName}' | grep DNSName | tr -d ' \"' | cut -d':' -f2
 
 ec2-endpoint:
-	@aws ec2 describe-instances --query 'Instances[*].{PublicIp:PublicIpAddress}'
+	@aws ec2 describe-instances   --query 'Reservations[].Instances[].[PublicIpAddress, Tags[?Value==`todo-monitoring`].Value[] | [0]]'   --output text 2>&1 | sed -e "s/todo-monitoring//g"
+
+build-infrastructure:
+	./infrastructure/infrastructure-builder.sh
+
+delete-infrastructure-files:
+	rm -r ./infrastructure/ecs-devops-todo-cdk
+
+install-monitoring-server:
+	./monitoring-scripts/installation-trigger.sh
 
 build-image:
 	docker build -t todo-app .

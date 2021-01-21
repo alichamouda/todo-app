@@ -1,0 +1,12 @@
+{
+    "name": "ECS Datasource",
+    "isDefault": true,
+    "type": "prometheus",
+    "url": "http://localhost:8080",
+    "access": "proxy",
+    "jsonData": {
+        "keepCookies": [],
+        "timeInterval": "5s"
+    },
+    "secureJsonFields": {}
+}

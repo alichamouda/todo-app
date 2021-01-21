@@ -1,0 +1,11 @@
+{
+    "type": "email",
+    "settings": {
+        "httpMethod": "POST",
+        "autoResolve": true,
+        "uploadImage": true,
+        "addresses": "ali.c.hamouda@gmail.com;\nalee.hamouda@gmail.com;"
+    },
+    "isDefault": true,
+    "name": "Gmail"
+}

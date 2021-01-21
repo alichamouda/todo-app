@@ -1,5 +1,5 @@
 # Todo App
-##### Projet réalisé par: Ali Hamouda et Hamza Chebil
+##### Projet réalisé par: Ali Hamouda
 
 ## Description
 

@@ -3,7 +3,7 @@
 read -p "AWS Region : " aws_region
 read -p "AWS Account Id : " aws_account_id
 
-rds_password_secret_arn=arn:aws:secretsmanager:us-east-1:500511893451:secret:rds\/todo-app-password-7sneN2
+rds_password_secret_arn="arn:aws:secretsmanager:us-east-1:500511893451:secret:rds\/todo-app-password-7sneN2"
 
 npm i -g aws-cdk
 mkdir ecs-devops-todo-cdk
@@ -32,5 +32,5 @@ EOF
 
 sed -i "s/aws_account_id/$aws_account_id/" app.py
 sed -i "s/aws_region/$aws_region/" app.py
-sed -i "s/db_password_secret_here/$rds_password_secret_arn/" ./ecs_devops_todo_cdk/ecs_devops_todo_cdk_stack.py
+# sed -i "s/db_password_secret_here/$rds_password_secret_arn/" ./ecs_devops_todo_cdk/ecs_devops_todo_cdk_stack.py
 cdk synth 

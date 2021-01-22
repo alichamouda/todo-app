@@ -6,6 +6,9 @@
 This is a NestJs Todo Demo REST app with CI/CD workflow.
 AWS native solution.
 
+### Stack used
+NestJS, MySQL, Docker GithubActions, AWS EC2, AWS RDS, AWS ELBv2, AWS ECS, Grafana, Prometheus, Ubuntu
+
 ## Repo Description
 #### Infrastructure Folder
 
@@ -34,6 +37,53 @@ Contains the app source code.
 This project introduces peaple and users to NestJs development, testing, containerization using Docker, Continuos Integration using Github Actions Workflows, Continuos Delivery using AWS Elastic Container Service a.k.a ECS.
 
 Feel free to fork, change and use the content of this repository.
+
+## App description 
+The app is a simple Todo REST app allowing user to **GET, POST, PUT, DELETE** todo. Is exposes a metrics endpoint for Prometheus for requests counter.
+
+|Route|Method|Functionality|Body|
+|---|--|--|--|
+|/api/todo|GET|Get todos from DB |-|
+|/api/todo|POST|Add new todo object |{title: string, body: string}|
+|/api/todo/:id|PUT|Update todo Status| {status: DONE \| PENDING \| STARTED} |
+|/api/todo/:id|DELETE|Delete a todo from db by id|-|
+|/metrics|GET|Get metrics: http_requests_total for prometheus|-|
+
+## Solution Architecture
+
+* I choose to set 3 Avaibility zones
+* We find 1 public subnet and one private subnet (with High Availability)
+* Loadbalancers get requests from InternetGateway and forward them on port 3000 to ECS instances
+* EC2 Instance is facing internet through IGW on ports 80,8080,22.
+
+
+![Solution Architecture](readme-pics/arch.png)
+
+### Connectivity:
+|ECS|EC2|
+|---|--|
+|![Solution Architecture](readme-pics/1.png)|![Solution Architecture](readme-pics/2.png)|
+
+#### EC2 Open Ports
+
+|Ports|Description|
+|---|--|
+|80|Grafana is set to serve over 80|
+|8080|Prometheus is set to serve over 8080|
+|22|for SSH|
+
+#### Elastic Container Service ECS Ports
+
+|Ports|Description|
+|---|--|
+|3000|Container serving over 3000|
+
+#### Elastic Load Balancer Ports
+
+|Ports|Description|
+|---|--|
+|80|Listening port|
+|3000|Forward port to ECS|
 
 ## Steps for running this solution
 
@@ -140,12 +190,24 @@ Steps will be executed automatically and solution will be deployed.
 
 Get back to Grafana, *GetCount* will be set to 0.
 
-## Solution Architecture
-
-* IG: Internet Gateway
-![Drag Racing](readme-pics/solarch.png)
 
 ## Workflow
+Workflow are made to automate solution testing and deployment.
 ### CI Workflow
+Has to jobs:
+* Check if all tests pass.
+* Check if Coverage Test is above a threshold.
 ### CD Workflow
+Has one Job with multiple steps:
+* Checks if code is merged (loop over repo status)
+* Checkout code
+* Fetches for RDS endpoint using aws cli and places it inside the container task definition. ( Task Definition is a JSON file that describes the deployment of the containers inside ECS. It includes network driver, volumes, Env. variables, ...)
+* Places DB password, saved as secret in Github repo, inside Task Definition Env Vars.
+* Log to AWS
+* Build image from dockerimage file and places it in Elastic Container Registry ECR.
+* Update the Task Definition to insert the new image ID.
+* Deploy Task Definition on ECS
+* Clean up
+
 ## ToDo
+Make scripts more abstract and available for other OSs or use tools such as Ansible.

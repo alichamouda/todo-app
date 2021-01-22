@@ -143,11 +143,9 @@ Get back to Grafana, *GetCount* will be set to 0.
 ## Solution Architecture
 
 * IG: Internet Gateway
-
 ![Drag Racing](readme-pics/solarch.png)
 
 ## Workflow
 ### CI Workflow
 ### CD Workflow
-
 ## ToDo

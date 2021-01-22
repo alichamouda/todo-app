@@ -7,7 +7,7 @@ This is a NestJs Todo Demo REST app with CI/CD workflow.
 AWS native solution.
 
 ### Stack used
-NestJS, MySQL, Docker GithubActions, AWS EC2, AWS RDS, AWS ELBv2, AWS ECS, Grafana, Prometheus, Ubuntu
+NestJS, MySQL, Docker GithubActions, AWS EC2, AWS RDS, AWS ELBv2, AWS ECS, Grafana, Prometheus, Ubuntu.
 
 ## Repo Folders
 #### Infrastructure Folder

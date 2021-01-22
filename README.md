@@ -1,4 +1,4 @@
-# Todo App
+# Todo App - DEVOPS Project
 ##### By: Ali Hamouda
 
 
@@ -9,7 +9,7 @@ AWS native solution.
 ### Stack used
 NestJS, MySQL, Docker GithubActions, AWS EC2, AWS RDS, AWS ELBv2, AWS ECS, Grafana, Prometheus, Ubuntu
 
-## Repo Description
+## Repo Folders
 #### Infrastructure Folder
 
 Contains the desired infrastructure of the deployed app. This description is made using AWS CDK.
@@ -33,12 +33,12 @@ Contains the app source code.
 * Docker and Docker-compose
 * Gmail Email for Grafana Alerting
 
-## Philosophy of the project
-This project introduces peaple and users to NestJs development, testing, containerization using Docker, Continuos Integration using Github Actions Workflows, Continuos Delivery using AWS Elastic Container Service a.k.a ECS.
+## 1. Philosophy of the project
+This project introduces people and users to NestJs development, testing, containerization using Docker, Continuos Integration using Github Actions Workflows, Continuos Delivery using AWS Elastic Container Service a.k.a ECS and monitoring using Prometheus and Grafana.
 
-Feel free to fork, change and use the content of this repository.
+The repo contains multiple automation scripts as part of this project.
 
-## App description 
+## 2. App description 
 The app is a simple Todo REST app allowing user to **GET, POST, PUT, DELETE** todo. Is exposes a metrics endpoint for Prometheus for requests counter.
 
 |Route|Method|Functionality|Body|
@@ -49,7 +49,7 @@ The app is a simple Todo REST app allowing user to **GET, POST, PUT, DELETE** to
 |/api/todo/:id|DELETE|Delete a todo from db by id|-|
 |/metrics|GET|Get metrics: http_requests_total for prometheus|-|
 
-## Solution Architecture
+## 3. Solution Architecture
 
 * I choose to set 3 Avaibility zones
 * We find 1 public subnet and one private subnet (with High Availability)
@@ -85,7 +85,71 @@ The app is a simple Todo REST app allowing user to **GET, POST, PUT, DELETE** to
 |80|Listening port|
 |3000|Forward port to ECS|
 
-## Steps for running this solution
+## 4. Monitoring
+The infrastructure contains an EC2 ubuntu instance for monitoring. Thi repository contains scripts to deploy Prometheus and Grafana (Configufration, Dashboard and Alerting) automatically.
+
+Prometheus is a time series data and monitoring solution. It scrapes every **scrape_interval** data from (by default) */metrics/* of set target. No agent is needed on remote server.
+
+Grafana is a dashboarding and alerting solution. It supports different datasources such as Prometheus, AWS Cloudwatch and others.
+
+The script:
+* Installs Prometheus
+* Copy configuration files
+* Installs Grafana
+* Copy Grafana Files
+* Send POST Requests to Grafana to save dashboard, datasource and alerting scripts
+
+Ports are configured as below:
+|Ports|Service|
+|---|--|
+|80|Grafana|
+|8080|Prometheus|
+
+### Grafana Auto configuration
+
+The folder **/infrastructure/grafana/** contains 3 JSON files as Datasource, Dashboard and Alert Configuration descriptions.
+
+The script automatically deploys them using post requests to Grafana endpoints.
+
+### Prometheus configuration
+The folder **/infrastructure/prometheus/** contains 2 files: service file and target configuration.
+
+```YAML
+global:
+  scrape_interval: 10s
+
+scrape_configs:
+  - job_name: 'prometheus_metrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['localhost:8080']
+  - job_name: 'ecs-metrics'
+    scrape_interval: 5s
+    static_configs:
+      - targets: ['prometheus-target-1:80'] 
+      #Prometheus-target-1 will be replaced by LB Dns address by the script
+```
+
+## 5. Workflows
+Workflow are made to automate solution testing and deployment.
+### CI Workflow
+Has to jobs:
+* Check if all tests pass.
+* Check if Coverage Test is above a threshold.
+### CD Workflow
+Has one Job with multiple steps:
+* Checks if code is merged (loop over repo status)
+* Checkout code
+* Fetches for RDS endpoint using aws cli and places it inside the container task definition. ( Task Definition is a JSON file that describes the deployment of the containers inside ECS. It includes network driver, volumes, Env. variables, ...)
+* Places DB password, saved as secret in Github repo, inside Task Definition Env Vars.
+* Log to AWS
+* Build image from dockerimage file and places it in Elastic Container Registry ECR.
+* Update the Task Definition to insert the new image ID.
+* Deploy Task Definition on ECS
+* Clean up
+
+
+## 6. Steps for running this solution
 
 
 > I assume here that awscli is well configured and node is installed
@@ -183,7 +247,7 @@ Set secrets by choosing settings-> secrets as belows:
 |DB_PASSWORD|DB password set in previous step as secret (not its ARN)|
 
 
-> For normal account: you need to edit the workflow and remove AWS_SESSION_TOKEN Input
+> For normal accounts: you need to edit the workflow and remove AWS_SESSION_TOKEN Input
 
 After adding secrets, we need to run the AWS workflow in github actions:
 Steps will be executed automatically and solution will be deployed.
@@ -191,23 +255,9 @@ Steps will be executed automatically and solution will be deployed.
 Get back to Grafana, *GetCount* will be set to 0.
 
 
-## Workflow
-Workflow are made to automate solution testing and deployment.
-### CI Workflow
-Has to jobs:
-* Check if all tests pass.
-* Check if Coverage Test is above a threshold.
-### CD Workflow
-Has one Job with multiple steps:
-* Checks if code is merged (loop over repo status)
-* Checkout code
-* Fetches for RDS endpoint using aws cli and places it inside the container task definition. ( Task Definition is a JSON file that describes the deployment of the containers inside ECS. It includes network driver, volumes, Env. variables, ...)
-* Places DB password, saved as secret in Github repo, inside Task Definition Env Vars.
-* Log to AWS
-* Build image from dockerimage file and places it in Elastic Container Registry ECR.
-* Update the Task Definition to insert the new image ID.
-* Deploy Task Definition on ECS
-* Clean up
+
 
 ## ToDo
-Make scripts more abstract and available for other OSs or use tools such as Ansible.
+* Make scripts more abstract and available for other OSs or use tools such as Ansible.
+* Expand the app for more features and why not add a facade.
+

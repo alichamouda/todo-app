@@ -1,4 +1,5 @@
-# Todo App - DEVOPS Project
+# Automation of Cloud Infrastructure and Solution Deployment on AWS 
+##### AWS CDK, Python, Docker, Github Actions, Elastic Container Service, Grafana, Prometheus, EC2, RDS 
 ##### By: Ali Hamouda
 
 

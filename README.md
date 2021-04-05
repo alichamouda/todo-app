@@ -17,7 +17,7 @@ Contains the desired infrastructure of the deployed app. This description is mad
 
 #### Monitoring Folder
 
-Has scripts for Monitoring Server configuration. Let's user install Grafana and Prometheus on EC2 instance automatically deployed using CDK files.
+Has scripts for Monitoring Server configuration. Lets user install Grafana and Prometheus on EC2 instance automatically deployed using CDK files.
 
 #### SRC
 
